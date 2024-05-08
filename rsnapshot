@@ -3,7 +3,7 @@ target=$1
 backup_target=$2
 
 
-if [[ ! $target ]] || [[ ! $backup_target ]] || [[ ! -e "$target" ]]; then
+if [[ ! $target ]] || [[ ! $backup_target ]]; then
   echo "Usage: test [user@host:]/target /backup_target"
   exit 1
 fi
