@@ -14,10 +14,10 @@ if [[ ! -d $backup_target ]] || [[ -z "$(ls $backup_target)" ]]; then
     # if backup target does not exist, make the first backup
     echo "making first backup (${target}) -> (${next_backup})"
     mkdir -p $backup_target # make backup target if not exist
-    rsync -azvh $target "${backup_target}/${next_backup}"
+    rsync -azvh "${target}/" "${backup_target}/${next_backup}"
 else
     # otherwise make an incremental backup
     last_backup=$(ls -t "${backup_target}/" | head -n 1) # get last backup from timestamp
     echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
-    rsync -azvh --link-dest="./${last_backup}" $target "${backup_target}/${next_backup}" # 
+    rsync -azvh --hard-links --link-dest="./${last_backup}" "${target}/" "${backup_target}/${next_backup}" # copy to next backup, make hard links from last backup if necessary
 fi
