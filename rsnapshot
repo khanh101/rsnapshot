@@ -19,5 +19,5 @@ else
     # otherwise make an incremental backup
     last_backup=$(ls -t "${backup_target}/" | head -n 1) # get last backup from timestamp
     echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
-    rsync -azvh --hard-links --link-dest="./${last_backup}" "${target}/" "${backup_target}/${next_backup}" # copy to next backup, make hard links from last backup if necessary
+    rsync -azvh --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_target}/${next_backup}" # copy to next backup, make hard links from last backup if necessary
 fi
