@@ -7,16 +7,17 @@ if [[ ! $target ]] || [[ ! $backup_target ]] || [[ ! -e "$target" ]]; then
   echo "Usage: test [user@host:]/target /backup_target"
   exit 1
 fi
-next_backup=$(date +'%Y-%m-%d_%H-%M-%S')
+
+next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
 if [[ ! -d $backup_target ]] || [[ -z "$(ls $backup_target)" ]]; then
+    # if backup target does not exist, make the first backup
     echo "making first backup (${target}) -> (${next_backup})"
-    mkdir -p $backup_target
+    mkdir -p $backup_target # make backup target if not exist
     rsync -azvh $target "${backup_target}/${next_backup}"
 else
-    # make incremental backup
-    last_backup=$(ls -t "${backup_target}/" | head -n 1)
+    # otherwise make an incremental backup
+    last_backup=$(ls -t "${backup_target}/" | head -n 1) # get last backup from timestamp
     echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
-    rsync -azvh --hard-links --link-dest="./${last_backup}" $target "${backup_target}/${next_backup}"
-
+    rsync -azvh --link-dest="./${last_backup}" $target "${backup_target}/${next_backup}" # 
 fi
