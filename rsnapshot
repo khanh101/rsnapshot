@@ -3,17 +3,16 @@ target=$1
 backup_target=$2
 
 
-if [[ ! $target ]] || [[ ! $backup_target ]] || [[ ! -e "$target" ]]; then
+if [[ ! $target ]] || [[ ! $backup_target ]] || [[ ! -e "$target" ]] || [[ ! -e "$backup_target" ]]; then
   echo "Usage: test [user@host:]/target /backup_target"
   exit 1
 fi
 
 next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
-if [[ ! -d $backup_target ]] || [[ -z "$(ls $backup_target)" ]]; then
-    # make the first backup if backup_target directory does not exist or empty
+if [[ -z "$(ls $backup_target)" ]]; then
+    # make the first backup if backup_target directory is empty
     echo "making first backup (${target}) -> (${next_backup})"
-    mkdir -p $backup_target # make backup_target directory if it does not exist
     rsync -azvh "${target}/" "${backup_target}/${next_backup}"
 else
     # otherwise make an incremental backup
