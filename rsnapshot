@@ -11,7 +11,7 @@ fi
 next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
 if [[ ! -d $backup_target ]]; then
-  echo "backup_target does not exist ($backup_target)"
+  echo "backup_target directory does not exist ($backup_target)"
   exit 1;
 fi
 
