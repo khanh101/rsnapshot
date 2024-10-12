@@ -1,28 +1,27 @@
 #!/usr/bin/env bash
 target=$1
-backup_target=$2
+backup_dir=$2
 
-
-if [[ ! $target ]] || [[ ! $backup_target ]]; then
-  echo "Usage: test [user@host:]/target /backup_target"
+if [[ ! $target ]] || [[ ! $backup_dir ]]; then
+  echo "Usage: test [user@host:]/target /backup_dir"
   exit 1
 fi
 
 next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
-if [[ ! -d $backup_target ]]; then
-  echo "backup_target directory does not exist ($backup_target)"
+if [[ ! -d $backup_dir ]]; then
+  echo "backup_dir directory does not exist ($backup_dir)"
   exit 1;
 fi
 
 
-if [[ -z "$(ls $backup_target)" ]]; then
-  # make the first backup if backup_target directory is empty
+if [[ -z "$(ls $backup_dir)" ]]; then
+  # make the first backup if backup_dir directory is empty
   echo "making first backup (${target}) -> (${next_backup})"
-  rsync -azvh "${target}/" "${backup_target}/${next_backup}"
+  rsync -azvh "${target}/" "${backup_dir}/${next_backup}"
 else
   # otherwise make an incremental backup
-  last_backup=$(ls -t "${backup_target}/" | head -n 1) # get last_backup from timestamp
+  last_backup=$(ls -t "${backup_dir}/" | head -n 1) # get last_backup from timestamp
   echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
-  rsync -azvh --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_target}/${next_backup}" # copy to next_backup, make hard links from last_backup if necessary
+  rsync -azvh --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${next_backup}" # copy to next_backup, make hard links from last_backup if necessary
 fi
