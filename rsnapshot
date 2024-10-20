@@ -7,13 +7,13 @@ if [[ ! $target ]] || [[ ! $backup_dir ]]; then
   exit 1
 fi
 
-next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
 if [[ ! -d $backup_dir ]]; then
   echo "backup_dir directory does not exist ($backup_dir)"
   exit 1;
 fi
 
+next_backup=$(date +'%Y-%m-%d_%H-%M-%S') # generate next backup
 
 if [[ -z "$(ls $backup_dir)" ]]; then
   # make the first backup if backup_dir directory is empty
