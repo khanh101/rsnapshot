@@ -25,5 +25,7 @@ else
   rsync -azvh --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${tmp_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
 fi
 
+# TODO - detect network error to cancel the backup
+
 # finish by moving tmp_backup to next_backup
 mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
