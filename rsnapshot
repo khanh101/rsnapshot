@@ -3,7 +3,7 @@ target=$1
 backup_dir=$2
 
 prefix="backup"
-tmp_backup="tmp_backup"
+tmp_backup="tmp_backup" # tmp_backup must not start with prefix
 
 if [[ ! $target ]] || [[ ! $backup_dir ]]; then
   echo "Usage: test [user@host:]/target /backup_dir"
