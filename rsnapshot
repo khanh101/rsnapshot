@@ -20,7 +20,7 @@ if [[ -z "$(ls $backup_dir)" ]]; then
   rsync -azvh --delete "${target}/" "${backup_dir}/${tmp_backup}"
 else
   # otherwise make an incremental backup
-  last_backup=$(ls -td ${backup_dir}/${prefix}_* | head -n 1) # get last backup_name from timestamp
+  last_backup=$(ls -td ${backup_dir}/${prefix}_* | head -n 1 | xargs basename) # get last backup_name from timestamp
   echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
   rsync -azvh --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${tmp_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
 fi
