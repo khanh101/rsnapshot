@@ -29,5 +29,8 @@ fi
 
 # TODO - detect network error to cancel the backup
 
+# update mtime for tmp_backup
+touch "${backup_dir}/${tmp_backup}"
+
 # finish by moving tmp_backup to next_backup
 mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
