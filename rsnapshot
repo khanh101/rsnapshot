@@ -10,6 +10,8 @@ if [[ ! $target ]] || [[ ! $backup_dir ]]; then
   exit 1
 fi
 
+
+rm -rf "${backup_dir}/${tmp_backup}"
 mkdir -p "${backup_dir}/${tmp_backup}"
 
 next_backup="${prefix}_$(date +'%Y-%m-%d_%H-%M-%S')" # generate next_backup
