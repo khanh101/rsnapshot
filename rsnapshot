@@ -18,7 +18,7 @@ next_backup="${prefix}_$(date +'%Y-%m-%d_%H-%M-%S')" # generate next_backup
 if [[ -z "$(ls $backup_dir)" ]]; then
   # make the first backup if backup_dir directory is empty
   echo "making first backup (${target}) -> (${next_backup})"
-  rsync -azvh --delete "${target}/" "${backup_dir}/${tmp_backup}"
+  rsync -azvh --delete "${target}/" "${backup_du -dir}/${tmp_backup}"
 else
   # otherwise make an incremental backup
   last_backup=$(ls -td ${backup_dir}/${prefix}_* | head -n 1 | xargs basename) # get last backup_name from timestamp
@@ -28,8 +28,12 @@ fi
 
 # TODO - detect network error to cancel the backup
 
-# update mtime for tmp_backup
-touch "${backup_dir}/${tmp_backup}"
 
-# finish by moving tmp_backup to next_backup
-mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
+if [ -d "${backup_dir}/${tmp_backup}" ]; then
+  # update mtime for tmp_backup
+  touch "${backup_dir}/${tmp_backup}"
+  # finish by moving tmp_backup to next_backup
+  mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
+fi
+
+
