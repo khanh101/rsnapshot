@@ -11,18 +11,18 @@ if [[ ! $target ]] || [[ ! $backup_dir ]]; then
 fi
 
 
-mkdir -p "${backup_dir}/${tmp_backup}"
-
 next_backup="${prefix}_$(date +'%Y-%m-%d_%H-%M-%S')" # generate next_backup
 
 if [[ -z "$(ls $backup_dir)" ]]; then
   # make the first backup if backup_dir directory is empty
   echo "making first backup (${target}) -> (${next_backup})"
+  mkdir -p "${backup_dir}/${tmp_backup}"
   rsync -azvh --delete "${target}/" "${backup_du -dir}/${tmp_backup}"
 else
   # otherwise make an incremental backup
   last_backup=$(ls -td ${backup_dir}/${prefix}_* | head -n 1 | xargs basename) # get last backup_name from timestamp
   echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
+  cp -lR "${backup_dir}/${last_backup}" "${backup_dir}/${tmp_backup}"
   rsync -azvh --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${tmp_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
 fi
 
