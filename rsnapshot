@@ -10,18 +10,22 @@ if [[ ! $target ]] || [[ ! $backup_dir ]]; then
   exit 1
 fi
 
-
 next_backup="${prefix}_$(date +'%Y-%m-%d_%H-%M-%S')" # generate next_backup
+
+rm -rf "${backup_dir}/${tmp_backup}"
 
 if [[ -z "$(ls $backup_dir)" ]]; then
   # make the first backup if backup_dir directory is empty
   echo "making first backup (${target}) -> (${next_backup})"
-  mkdir -p "${backup_dir}/${next_backup}"
-  rsync -azvh --delete "${target}/" "${backup_du -dir}/${next_backup}"
+  rsync -avh --progress --delete "${target}/" "${backup_dir}/${tmp_backup}"
 else
   # otherwise make an incremental backup
   last_backup=$(ls -td ${backup_dir}/${prefix}_* | head -n 1 | xargs basename) # get last backup_name from timestamp
   echo "making incremental backup (${target}) -> (${last_backup} -> ${next_backup})"
-  rsync -azvh --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${next_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
+  rsync -avh --progress --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${tmp_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
 fi
 
+if [ -d "${backup_dir}/${tmp_backup}" ]; then # network error -> no tmp
+  touch "${backup_dir}/${tmp_backup}" # set mtime
+  mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
+fi
