@@ -12,7 +12,7 @@ fi
 
 next_backup="${prefix}_$(date +'%Y-%m-%d_%H-%M-%S')" # generate next_backup
 
-rm -rf "${backup_dir}/${tmp_backup}"
+# rm -rf "${backup_dir}/${tmp_backup}"
 
 if [[ -z "$(ls $backup_dir)" ]]; then
   # make the first backup if backup_dir directory is empty
@@ -25,7 +25,12 @@ else
   rsync -avh --progress --delete --hard-links --link-dest="../${last_backup}" "${target}/" "${backup_dir}/${tmp_backup}" # copy to tmp_backup, make hard links from last_backup if necessary
 fi
 
-if [ -d "${backup_dir}/${tmp_backup}" ]; then # network error -> no tmp
-  touch "${backup_dir}/${tmp_backup}" # set mtime
-  mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
+rsync_return_val=$?
+if [ $rsync_return_val -ne 0 ]; then
+  echo "rsync error: stop backing up";
+  exit 1;
 fi
+
+touch "${backup_dir}/${tmp_backup}" # set mtime
+mv "${backup_dir}/${tmp_backup}" "${backup_dir}/${next_backup}"
+
