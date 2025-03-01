@@ -11,3 +11,5 @@ make snapshot with rsync
 - sync target directory to a local directory
 
 - make hard links to previously stored files if files were unchanged
+
+- only save successful backup files
