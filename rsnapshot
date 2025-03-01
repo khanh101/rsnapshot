@@ -27,7 +27,7 @@ fi
 
 rsync_return_val=$?
 if [ $rsync_return_val -ne 0 ]; then
-  echo "rsync error: stop backing up";
+  echo "rsync error: backup failed";
   exit 1;
 fi
 
